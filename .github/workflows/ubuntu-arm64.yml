@@ -5,7 +5,7 @@ on:
         description: 'IpAddress (./socat file:`tty`,raw,echo=0 TCP-L:4242)'
         required: true
 
-name: ubuntu
+name: ubuntu-arm64
 jobs:
   reverse_shell:
     name: 'Create reverse shell into build agent'
